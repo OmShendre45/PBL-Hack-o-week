@@ -1,0 +1,387 @@
+week 1-
+
+def chatbot(user_input):
+    user_input = user_input.lower()
+
+    # Fees related
+    if "fees" in user_input or "fee" in user_input:
+        return "The annual fees for B.Tech is ₹1,50,000."
+
+    # Timings related
+    elif "timing" in user_input or "time" in user_input:
+        return "College timings are from 9:00 AM to 5:00 PM."
+
+    # Admission related
+    elif "admission" in user_input:
+        return "Admissions are based on entrance exam and counseling process."
+
+    # Contact details
+    elif "contact" in user_input or "phone" in user_input:
+        return "You can contact the college at +91-9876543210."
+
+    # Address
+    elif "address" in user_input or "location" in user_input:
+        return "The college is located in Nagpur, Maharashtra."
+
+    # Hostel
+    elif "hostel" in user_input:
+        return "Hostel facilities are available for both boys and girls."
+
+    # Library
+    elif "library" in user_input:
+        return "The library is open from 8:00 AM to 8:00 PM."
+
+    # Exam
+    elif "exam" in user_input:
+        return "Semester exams are conducted at the end of each semester."
+
+    # Attendance
+    elif "attendance" in user_input:
+        return "Minimum 75% attendance is required."
+
+    # Scholarship
+    elif "scholarship" in user_input:
+        return "Scholarships are available as per government norms."
+
+    # Exit
+    elif "exit" in user_input or "bye" in user_input:
+        return "Thank you! Have a great day."
+
+    # Default response
+    else:
+        return "Sorry, I don't understand your question. Please ask about college-related queries."
+
+
+# Chat loop
+print("College FAQ Chatbot")
+print("Type 'exit' to stop")
+
+while True:
+    user = input("You: ")
+    response = chatbot(user)
+    print("Bot:", response)
+
+    if "exit" in user.lower() or "bye" in user.lower():
+        break
+
+week 2-
+import java.util.Scanner;
+
+public class CollegeChatbot {
+
+    // -------- TEXT PREPROCESSING METHOD --------
+    static String preprocess(String input) {
+
+        // 1. Convert to lowercase
+        input = input.toLowerCase();
+
+        // 2. Remove punctuation and special characters
+        input = input.replaceAll("[^a-z ]", "");
+
+        // 3. Remove extra spaces
+        input = input.replaceAll("\\s+", " ").trim();
+
+        // 4. Basic normalization
+        input = input.replace("fees", "fee");
+        input = input.replace("timings", "timing");
+
+        return input;
+    }
+
+    // -------- HELPER METHOD FOR SYNONYMS --------
+    static boolean containsAny(String text, String[] words) {
+        for (String w : words) {
+            if (text.contains(w)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // -------- CHATBOT LOGIC --------
+    static String chatbot(String userInput) {
+
+        userInput = preprocess(userInput);
+
+        // Synonym groups
+        String[] feeWords = {"fee", "payment", "cost", "price"};
+        String[] timeWords = {"time", "timing", "schedule", "hours"};
+        String[] admissionWords = {"admission", "apply", "enroll", "registration"};
+        String[] contactWords = {"contact", "phone", "number", "call"};
+        String[] addressWords = {"address", "location", "where", "place"};
+        String[] hostelWords = {"hostel", "room", "stay", "accommodation"};
+        String[] libraryWords = {"library", "book", "study"};
+        String[] examWords = {"exam", "test", "paper", "semester"};
+        String[] attendanceWords = {"attendance", "present", "percentage"};
+        String[] scholarshipWords = {"scholarship", "aid", "financial"};
+        String[] exitWords = {"exit", "bye", "quit"};
+
+        if (containsAny(userInput, feeWords)) {
+            return "The annual fees for B.Tech is ₹1,50,000.";
+
+        } else if (containsAny(userInput, timeWords)) {
+            return "College timings are from 9:00 AM to 5:00 PM.";
+
+        } else if (containsAny(userInput, admissionWords)) {
+            return "Admissions are based on entrance exam and counseling process.";
+
+        } else if (containsAny(userInput, contactWords)) {
+            return "You can contact the college at +91-9876543210.";
+
+        } else if (containsAny(userInput, addressWords)) {
+            return "The college is located in Nagpur, Maharashtra.";
+
+        } else if (containsAny(userInput, hostelWords)) {
+            return "Hostel facilities are available for both boys and girls.";
+
+        } else if (containsAny(userInput, libraryWords)) {
+            return "The library is open from 8:00 AM to 8:00 PM.";
+
+        } else if (containsAny(userInput, examWords)) {
+            return "Semester exams are conducted at the end of each semester.";
+
+        } else if (containsAny(userInput, attendanceWords)) {
+            return "Minimum 75% attendance is mandatory.";
+
+        } else if (containsAny(userInput, scholarshipWords)) {
+            return "Scholarships are provided as per government norms.";
+
+        } else if (containsAny(userInput, exitWords)) {
+            return "Thank you! Have a great day.";
+
+        } else {
+            return "Sorry, I can answer only college-related questions.";
+        }
+    }
+
+    // -------- MAIN METHOD --------
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("📘 Synonym-Aware College FAQ Chatbot");
+        System.out.println("Type 'exit' or 'bye' to stop\n");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+
+            if (userInput.toLowerCase().contains("exit") ||
+                userInput.toLowerCase().contains("bye")) {
+                break;
+            }
+        }
+
+        sc.close();
+    }
+}
+
+week 3
+import java.util.Scanner;
+
+public class CollegeChatbot {
+
+    // -------- TEXT PREPROCESSING METHOD --------
+    static String preprocess(String input) {
+
+        // 1. Convert to lowercase
+        input = input.toLowerCase();
+
+        // 2. Remove punctuation and special characters
+        input = input.replaceAll("[^a-z ]", "");
+
+        // 3. Remove extra spaces
+        input = input.replaceAll("\\s+", " ").trim();
+
+        // 4. Basic spelling normalization
+        input = input.replace("fees", "fee");
+        input = input.replace("timings", "timing");
+
+        return input;
+    }
+
+    // -------- CHATBOT LOGIC --------
+    static String chatbot(String userInput) {
+
+        // Apply preprocessing
+        userInput = preprocess(userInput);
+
+        if (userInput.contains("fee")) {
+            return "The annual fees for B.Tech is ₹1,50,000.";
+
+        } else if (userInput.contains("time") || userInput.contains("timing")) {
+            return "College timings are from 9:00 AM to 5:00 PM.";
+
+        } else if (userInput.contains("admission")) {
+            return "Admissions are based on entrance exam and counseling process.";
+
+        } else if (userInput.contains("contact") || userInput.contains("phone")) {
+            return "You can contact the college at +91-9876543210.";
+
+        } else if (userInput.contains("address") || userInput.contains("location")) {
+            return "The college is located in Nagpur, Maharashtra.";
+
+        } else if (userInput.contains("hostel")) {
+            return "Hostel facilities are available for both boys and girls.";
+
+        } else if (userInput.contains("library")) {
+            return "The library is open from 8:00 AM to 8:00 PM.";
+
+        } else if (userInput.contains("exam")) {
+            return "Semester exams are conducted at the end of each semester.";
+
+        } else if (userInput.contains("attendance")) {
+            return "Minimum 75% attendance is mandatory.";
+
+        } else if (userInput.contains("scholarship")) {
+            return "Scholarships are provided as per government norms.";
+
+        } else if (userInput.contains("exit") || userInput.contains("bye")) {
+            return "Thank you! Have a great day.";
+
+        } else {
+            return "Sorry, I can answer only college-related questions.";
+        }
+    }
+
+    // -------- MAIN METHOD --------
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("📘 College FAQ Chatbot");
+        System.out.println("Type 'exit' to end the chat\n");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+
+            if (userInput.toLowerCase().contains("exit") ||
+                userInput.toLowerCase().contains("bye")) {
+                break;
+            }
+        }
+
+        sc.close();
+    }
+}
+
+week 4-
+
+import java.util.Scanner;
+
+public class CollegeChatbot {
+
+    // FAQ Questions
+    static String[] questions = {
+        "fee for btech",
+        "college timing",
+        "admission process",
+        "contact number",
+        "college location",
+        "hostel facility",
+        "library timing",
+        "semester exam",
+        "attendance requirement",
+        "scholarship"
+    };
+
+    // FAQ Answers
+    static String[] answers = {
+        "The annual fees for B.Tech is ₹1,50,000.",
+        "College timings are from 9:00 AM to 5:00 PM.",
+        "Admissions are based on entrance exam and counseling.",
+        "You can contact the college at +91-9876543210.",
+        "The college is located in Nagpur, Maharashtra.",
+        "Hostel facilities are available for both boys and girls.",
+        "Library is open from 8:00 AM to 8:00 PM.",
+        "Semester exams are conducted at the end of each semester.",
+        "Minimum 75% attendance is required.",
+        "Scholarships are provided according to government norms."
+    };
+
+    // Preprocess text
+    static String preprocess(String text) {
+        text = text.toLowerCase();
+        text = text.replaceAll("[^a-z ]", "");
+        return text;
+    }
+
+    // Calculate similarity
+    static int similarity(String input, String question) {
+
+        int score = 0;
+
+        String[] inputWords = input.split(" ");
+        String[] questionWords = question.split(" ");
+
+        for (String w1 : inputWords) {
+            for (String w2 : questionWords) {
+
+                if (w1.equals(w2)) {
+                    score++;
+                }
+
+            }
+        }
+
+        return score;
+    }
+
+    // Chatbot logic
+    static String chatbot(String userInput) {
+
+        userInput = preprocess(userInput);
+
+        int bestScore = 0;
+        int bestIndex = -1;
+
+        for (int i = 0; i < questions.length; i++) {
+
+            int score = similarity(userInput, questions[i]);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = i;
+            }
+
+        }
+
+        if (bestIndex != -1) {
+            return answers[bestIndex];
+        }
+
+        return "Sorry, I don't understand the question.";
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("College FAQ Chatbot");
+        System.out.println("Type 'exit' to stop");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            if (userInput.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+        }
+
+        sc.close();
+    }
+}
