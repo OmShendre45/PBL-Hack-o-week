@@ -1,0 +1,52 @@
+# Simple chatbot fallback strategy
+
+def classify_query(user_input):
+    unclear_keywords = ["something", "this", "that", "help me", "issue"]
+    out_of_scope_keywords = ["hack", "illegal", "crack", "bypass"]
+
+    # Check unclear
+    for word in unclear_keywords:
+        if word in user_input.lower():
+            return "unclear"
+
+    # Check out-of-scope
+    for word in out_of_scope_keywords:
+        if word in user_input.lower():
+            return "out_of_scope"
+
+    return "clear"
+
+
+def handle_query(user_input):
+    query_type = classify_query(user_input)
+
+    if query_type == "clear":
+        return {
+            "response": "Here is the information you requested.",
+            "action": "answer"
+        }
+
+    elif query_type == "unclear":
+        return {
+            "response": "I'm not sure I fully understand your question. Could you please clarify or provide more details?",
+            "action": "clarify"
+        }
+
+    elif query_type == "out_of_scope":
+        return {
+            "response": "This request is outside my scope. You can contact our support team.",
+            "action": "escalate",
+            "email": "support@company.com",
+            "desk_link": "https://helpdesk.company.com"
+        }
+
+
+# Example usage
+user_input = input("User: ")
+result = handle_query(user_input)
+
+print("Bot:", result["response"])
+
+if result["action"] == "escalate":
+    print("📧 Email:", result["email"])
+    print("🔗 Helpdesk:", result["desk_link"]) for this
