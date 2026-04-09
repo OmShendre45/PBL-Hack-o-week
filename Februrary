@@ -1,1 +1,557 @@
+week 1
+import java.util.*;
+import java.util.regex.*;
 
+public class CollegeChatbot {
+
+    // -------- STORED FAQ QUESTIONS --------
+    static String[] questions = {
+        "what is the fee for btech",
+        "what are the college timings",
+        "how can i get admission",
+        "what is the contact number",
+        "where is the college located",
+        "is hostel facility available",
+        "what are library timings",
+        "when are semester exams conducted",
+        "what is the attendance requirement",
+        "are scholarships available"
+    };
+
+    // -------- STORED FAQ ANSWERS --------
+    static String[] answers = {
+        "The annual fees for B.Tech is ₹1,50,000.",
+        "College timings are from 9:00 AM to 5:00 PM.",
+        "Admissions are based on entrance exam and counseling process.",
+        "You can contact the college at +91-9876543210.",
+        "The college is located in Nagpur, Maharashtra.",
+        "Hostel facilities are available for both boys and girls.",
+        "The library is open from 8:00 AM to 8:00 PM.",
+        "Semester exams are conducted at the end of each semester.",
+        "Minimum 75% attendance is mandatory.",
+        "Scholarships are provided as per government norms."
+    };
+
+    // -------- EXAM SCHEDULE --------
+    static Map<String, String> examSchedule = new HashMap<>();
+
+    static {
+        examSchedule.put("4-CS", "18 June");
+        examSchedule.put("4-DBMS", "20 June");
+        examSchedule.put("3-OS", "15 June");
+        examSchedule.put("2-MATH", "12 June");
+        examSchedule.put("5-TOC", "22 June");
+    }
+
+    // -------- TEXT PREPROCESSING --------
+    static String preprocess(String input) {
+
+        input = input.toLowerCase();
+        input = input.replaceAll("[^a-z0-9 ]", "");
+        input = input.replaceAll("\\s+", " ").trim();
+
+        return input;
+    }
+
+    // -------- EXTRACT SEMESTER --------
+    static String extractSemester(String text) {
+
+        Pattern p = Pattern.compile("sem\\s*(\\d+)");
+        Matcher m = p.matcher(text.toLowerCase());
+
+        if (m.find()) {
+            return m.group(1);
+        }
+
+        return null;
+    }
+
+    // -------- EXTRACT COURSE CODE --------
+    static String extractCourse(String text) {
+
+        text = text.toLowerCase();
+        String[] words = text.split(" ");
+
+        String[] courses = {"cs", "dbms", "os", "math", "toc"};
+
+        for (String w : words) {
+            for (String c : courses) {
+                if (w.equals(c)) {
+                    return c.toUpperCase();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // -------- TERM FREQUENCY --------
+    static Map<String, Integer> termFrequency(String text) {
+
+        Map<String, Integer> tf = new HashMap<>();
+        String[] words = text.split(" ");
+
+        for (String w : words) {
+            tf.put(w, tf.getOrDefault(w, 0) + 1);
+        }
+
+        return tf;
+    }
+
+    // -------- IDF --------
+    static double idf(String word) {
+
+        int count = 0;
+
+        for (String q : questions) {
+            if (q.contains(word)) {
+                count++;
+            }
+        }
+
+        return Math.log((double) questions.length / (1 + count));
+    }
+
+    // -------- TF-IDF SIMILARITY --------
+    static double similarity(String query, String question) {
+
+        Map<String, Integer> tfQuery = termFrequency(query);
+        Map<String, Integer> tfQuestion = termFrequency(question);
+
+        double score = 0;
+
+        for (String word : tfQuery.keySet()) {
+
+            if (tfQuestion.containsKey(word)) {
+
+                double tf = tfQuery.get(word);
+                double idf = idf(word);
+
+                score += tf * idf;
+            }
+        }
+
+        return score;
+    }
+
+    // -------- CHATBOT LOGIC --------
+    static String chatbot(String userInput) {
+
+        String sem = extractSemester(userInput);
+        String course = extractCourse(userInput);
+
+        userInput = preprocess(userInput);
+
+        // -------- EXAM QUERY USING ENTITIES --------
+        if (userInput.contains("exam")) {
+
+            if (sem != null && course != null) {
+
+                String key = sem + "-" + course;
+                String date = examSchedule.get(key);
+
+                if (date != null) {
+                    return "The exam for Semester " + sem + " (" + course + ") is on " + date + ".";
+                } else {
+                    return "Exam date for Semester " + sem + " (" + course + ") is not available.";
+                }
+            }
+
+            if (sem != null) {
+                return "Please specify the course code for Semester " + sem + " exam.";
+            }
+
+            return "Please specify semester and course code.";
+        }
+
+        // -------- TF-IDF RETRIEVAL --------
+        double bestScore = 0;
+        int bestIndex = -1;
+
+        for (int i = 0; i < questions.length; i++) {
+
+            double score = similarity(userInput, questions[i]);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = i;
+            }
+        }
+
+        if (bestIndex != -1) {
+            return answers[bestIndex];
+        }
+
+        return "Sorry, I could not find an answer to your question.";
+    }
+
+    // -------- MAIN METHOD --------
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("📘 College Chatbot (TF-IDF + Entity Recognition)");
+        System.out.println("Type 'exit' to stop\n");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            if (userInput.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+        }
+
+        sc.close();
+    }
+}
+
+week 2
+import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+
+    // -------- Conversation State --------
+    static String lastTopic = "";
+
+    // -------- Exam Schedule --------
+    static Map<String, String> examSchedule = new HashMap<>();
+
+    static {
+        examSchedule.put("1", "10 June");
+        examSchedule.put("2", "12 June");
+        examSchedule.put("3", "15 June");
+        examSchedule.put("4", "18 June");
+    }
+
+    // -------- Extract Semester --------
+    static String extractSemester(String text) {
+
+        text = text.toLowerCase().trim();
+
+        // sem 3 or semester 3
+        Pattern p = Pattern.compile("(sem|semester)\\s*(\\d+)");
+        Matcher m = p.matcher(text);
+
+        if (m.find()) {
+            return m.group(2);
+        }
+
+        // single number input
+        if (text.matches("[1-4]")) {
+            return text;
+        }
+
+        // year formats
+        if (text.contains("first year") || text.contains("1st year")) return "1";
+        if (text.contains("second year") || text.contains("2nd year")) return "2";
+        if (text.contains("third year") || text.contains("3rd year")) return "3";
+        if (text.contains("fourth year") || text.contains("4th year")) return "4";
+
+        return null;
+    }
+
+    // -------- Chatbot Logic --------
+    static String chatbot(String userInput) {
+
+        userInput = userInput.toLowerCase();
+
+        // First exam question
+        if (userInput.contains("exam")) {
+
+            lastTopic = "exam";
+
+            String sem = extractSemester(userInput);
+
+            if (sem != null) {
+                return "Semester " + sem + " exams start on " + examSchedule.get(sem);
+            }
+
+            return "Which semester exam are you asking about?";
+        }
+
+        // Follow-up question
+        if (lastTopic.equals("exam")) {
+
+            String sem = extractSemester(userInput);
+
+            if (sem != null) {
+                lastTopic = "";
+                return "Semester " + sem + " exams start on " + examSchedule.get(sem);
+            }
+        }
+
+        // -------- FAQ --------
+        if (userInput.contains("fee")) {
+            return "B.Tech annual fee is Rs 1,50,000.";
+        }
+
+        if (userInput.contains("timing")) {
+            return "College timings are 9 AM to 5 PM.";
+        }
+
+        if (userInput.contains("hostel")) {
+            return "Hostel facility is available for students.";
+        }
+
+        if (userInput.contains("library")) {
+            return "Library is open from 8 AM to 8 PM.";
+        }
+
+        if (userInput.contains("location")) {
+            return "The college is located in Nagpur, Maharashtra.";
+        }
+
+        return "Sorry, I could not understand your question.";
+    }
+
+    // -------- Main Method --------
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("College Chatbot (Multi-turn Conversation)");
+        System.out.println("Type 'exit' to stop\n");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String input = sc.nextLine();
+
+            if (input.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            String response = chatbot(input);
+            System.out.println("Bot: " + response);
+        }
+
+        sc.close();
+    }
+}
+
+week 3
+import java.util.Scanner;
+
+public class CollegeChatbot {
+
+    // FAQ Questions
+    static String[] questions = {
+        "fee for btech",
+        "college timing",
+        "admission process",
+        "contact number",
+        "college location",
+        "hostel facility",
+        "library timing",
+        "semester exam",
+        "attendance requirement",
+        "scholarship"
+    };
+
+    // FAQ Answers
+    static String[] answers = {
+        "The annual fees for B.Tech is ₹1,50,000.",
+        "College timings are from 9:00 AM to 5:00 PM.",
+        "Admissions are based on entrance exam and counseling.",
+        "You can contact the college at +91-9876543210.",
+        "The college is located in Nagpur, Maharashtra.",
+        "Hostel facilities are available for both boys and girls.",
+        "Library is open from 8:00 AM to 8:00 PM.",
+        "Semester exams are conducted at the end of each semester.",
+        "Minimum 75% attendance is required.",
+        "Scholarships are provided according to government norms."
+    };
+
+    // Preprocess text
+    static String preprocess(String text) {
+        text = text.toLowerCase();
+        text = text.replaceAll("[^a-z ]", "");
+        return text;
+    }
+
+    // Calculate similarity
+    static int similarity(String input, String question) {
+
+        int score = 0;
+
+        String[] inputWords = input.split(" ");
+        String[] questionWords = question.split(" ");
+
+        for (String w1 : inputWords) {
+            for (String w2 : questionWords) {
+
+                if (w1.equals(w2)) {
+                    score++;
+                }
+
+            }
+        }
+
+        return score;
+    }
+
+    // Chatbot logic
+    static String chatbot(String userInput) {
+
+        userInput = preprocess(userInput);
+
+        int bestScore = 0;
+        int bestIndex = -1;
+
+        for (int i = 0; i < questions.length; i++) {
+
+            int score = similarity(userInput, questions[i]);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = i;
+            }
+
+        }
+
+        if (bestIndex != -1) {
+            return answers[bestIndex];
+        }
+
+        return "Sorry, I don't understand the question.";
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("College FAQ Chatbot");
+        System.out.println("Type 'exit' to stop");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            if (userInput.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+        }
+
+        sc.close();
+    }
+}
+
+week 4import java.util.Scanner;
+
+public class CollegeChatbot {
+
+    // FAQ Questions
+    static String[] questions = {
+        "fee for btech",
+        "college timing",
+        "admission process",
+        "contact number",
+        "college location",
+        "hostel facility",
+        "library timing",
+        "semester exam",
+        "attendance requirement",
+        "scholarship"
+    };
+
+    // FAQ Answers
+    static String[] answers = {
+        "The annual fees for B.Tech is ₹1,50,000.",
+        "College timings are from 9:00 AM to 5:00 PM.",
+        "Admissions are based on entrance exam and counseling.",
+        "You can contact the college at +91-9876543210.",
+        "The college is located in Nagpur, Maharashtra.",
+        "Hostel facilities are available for both boys and girls.",
+        "Library is open from 8:00 AM to 8:00 PM.",
+        "Semester exams are conducted at the end of each semester.",
+        "Minimum 75% attendance is required.",
+        "Scholarships are provided according to government norms."
+    };
+
+    // Preprocess text
+    static String preprocess(String text) {
+        text = text.toLowerCase();
+        text = text.replaceAll("[^a-z ]", "");
+        return text;
+    }
+
+    // Calculate similarity
+    static int similarity(String input, String question) {
+
+        int score = 0;
+
+        String[] inputWords = input.split(" ");
+        String[] questionWords = question.split(" ");
+
+        for (String w1 : inputWords) {
+            for (String w2 : questionWords) {
+
+                if (w1.equals(w2)) {
+                    score++;
+                }
+
+            }
+        }
+
+        return score;
+    }
+
+    // Chatbot logic
+    static String chatbot(String userInput) {
+
+        userInput = preprocess(userInput);
+
+        int bestScore = 0;
+        int bestIndex = -1;
+
+        for (int i = 0; i < questions.length; i++) {
+
+            int score = similarity(userInput, questions[i]);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = i;
+            }
+
+        }
+
+        if (bestIndex != -1) {
+            return answers[bestIndex];
+        }
+
+        return "Sorry, I don't understand the question.";
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("College FAQ Chatbot");
+        System.out.println("Type 'exit' to stop");
+
+        while (true) {
+
+            System.out.print("You: ");
+            String userInput = sc.nextLine();
+
+            if (userInput.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            String response = chatbot(userInput);
+            System.out.println("Bot: " + response);
+        }
+
+        sc.close();
+    }
+}
